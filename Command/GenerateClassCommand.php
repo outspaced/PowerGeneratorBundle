@@ -59,8 +59,6 @@ class GenerateClassCommand extends GeneratorCommand
     {
         $skeletonDirs = array();
 
-        exit($bundle->getPath().'/Resources/SensioGeneratorBundle/skeleton');
-
         if (isset($bundle) && is_dir($dir = $bundle->getPath().'/Resources/SensioGeneratorBundle/skeleton')) {
             $skeletonDirs[] = $dir;
         }
