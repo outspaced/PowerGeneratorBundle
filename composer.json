@@ -11,8 +11,8 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0"
-        "sensio/generator-bundle": "^3.0"
+        "php": ">=5.4.0",
+        "sensio/generator-bundle": "^3.0",
         "twig/twig": "~1.18"
     },
     "minimum-stability": "dev",
