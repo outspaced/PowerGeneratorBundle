@@ -80,14 +80,15 @@ class GenerateClassCommand extends GeneratorCommand
     {
         $dirs = $this->getSkeletonDirs($input->getOption('bundle'));
 
-        // So I need to generate the class AND the unit test
-        $generator = $this->getGenerator();
-        $generator->generate(
-            $input->getOption('bundle'),
-            $input->getOption('section'),
-            $input->getOption('class'),
-            $input->getOption('fields')
-        );
+        $this->getGenerator()
+            ->generate(
+                $input->getOption('bundle'),
+                $input->getOption('section'),
+                $input->getOption('class'),
+                $input->getOption('fields')
+            );
+
+        $output->writeln('Class has been generated');
     }
 
     /**
@@ -101,7 +102,7 @@ class GenerateClassCommand extends GeneratorCommand
         // namespace
         $output->writeln(array(
             'First, you need to give the class name you want to generate.',
-            'You must use the shortcut notation like <comment>AcmeBlogBundle:Post</comment>',
+            'You must use the shortcut notation like <comment>AcmeBlogBundle:Post:Comment</comment>',
             '',
         ));
 
@@ -143,7 +144,6 @@ class GenerateClassCommand extends GeneratorCommand
         $input->setOption('section', $section);
         $input->setOption('class', $class);
 
-        $output->writeln('OK now go away');
     }
 
     /**

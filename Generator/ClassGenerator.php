@@ -40,11 +40,14 @@ class ClassGenerator extends Generator\Generator
             if (preg_match('/(?<lower>.+)\\\\(?<top>.+)\\\\(?<class>.+)/i', $field['type'], $matches)) {
                 $fields[$key]['type'] = $matches['top'] . '\\' . $matches['class'];
                 $useStatements[] = $matches['lower'] . '\\' . $matches['top'];
+            } elseif (preg_match('/(?<top>.+)\\\\(?<class>.+)/i', $field['type'], $matches)) {
+                $useStatements[] = $matches['top'];
             }
 
             // Type hint!
             if ($this->isTypeHintable($fields[$key]['type'])) {
                 $fields[$key]['typeHint'] = $fields[$key]['type'];
+                $useStatements[] = $fields[$key]['type'];
             } else {
                 $fields[$key]['typeHint'] = '';
             }
