@@ -16,9 +16,10 @@
         "twig/twig": "~1.18"
     },
     "minimum-stability": "dev",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "3.0.x-dev"
+    "autoload" : {
+        "psr-0" : {
+            "Outspaced\\PowerGeneratorBundle" : ""
         }
-    }
+    },
+    "target-dir" : "Outspaced/PowerGeneratorBundle",
 }
