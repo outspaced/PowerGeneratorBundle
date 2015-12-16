@@ -1,0 +1,24 @@
+{
+    "name": "outspaced/power-generator",
+    "description": "Generates simple classes and associated unit tests",
+    "keywords": [],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alex Brims",
+            "email": "alex.brims@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+        "sensio/generator-bundle": "^3.0"
+        "twig/twig": "~1.18"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.0.x-dev"
+        }
+    }
+}

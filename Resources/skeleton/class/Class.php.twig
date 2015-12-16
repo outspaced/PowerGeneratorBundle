@@ -1,0 +1,50 @@
+<?php
+
+namespace {{ namespace }}\{{ section }};
+
+{% block use_statements %}
+{% for use in uses %}
+use {{ use }};
+{% endfor %}
+{% endblock use_statements %}
+
+{% block class_definition %}
+class {{ class }}
+{% endblock class_definition %}
+{
+{% block class_body %}
+{# DECLARATIONS #}
+{% for field in fields %}
+    /**
+     * @var {{ field.type }}
+     */
+    protected ${{ field.fieldName }};
+
+{% endfor -%}
+{# GETTERS #}
+{% for field in fields %}
+    /**
+     * @return {{ field.type }}
+     */
+    public function get{{ field.fieldNameCapitalized }}()
+    {
+        return $this->{{ field.fieldName }};
+    }
+
+{% endfor -%}
+{# SETTERS #}
+{% for field in fields %}
+    /**
+     * @param {{ field.type }}
+     * @return {{ class }}
+     */
+    public function set{{ field.fieldNameCapitalized }}({{ field.typeHint }}{% if field.typeHint is not empty %} {% endif %}${{ field.fieldName }})
+    {
+        $this->{{ field.fieldName }} = ${{ field.fieldName }};
+
+        return $this;
+    }
+
+{% endfor -%}
+{% endblock class_body %}
+}

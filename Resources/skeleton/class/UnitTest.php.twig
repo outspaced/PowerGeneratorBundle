@@ -1,0 +1,45 @@
+<?php
+
+namespace {{ namespace }}\Tests\{{ section }};
+
+{% block use_statements %}
+use {{ namespace }}\{{ section }};
+{% for use in uses %}
+use {{ use }};
+{% endfor %}
+{% endblock use_statements %}
+
+{% block class_definition %}
+class {{ class }}Test extends \PHPUnit_Framework_TestCase
+{% endblock class_definition %}
+{
+{% block class_body %}
+    /**
+     * @var {{ section }}\{{ class }}
+     */
+    protected $object;
+
+    /**
+     */
+    protected function setUp()
+    {
+        $this->object = new {{ section }}\{{ class }};
+    }
+
+{% for field in fields %}
+    /**
+     * @covers {{ section }}\{{ class }}::set{{ field.fieldNameCapitalized }}
+     * @covers {{ section }}\{{ class }}::get{{ field.fieldNameCapitalized }}
+     */
+    public function testSet{{ field.fieldNameCapitalized }}()
+    {
+        $value = {{ field.testValue }};
+
+        $this->object->set{{ field.fieldNameCapitalized }}($value);
+
+        $this->assertEquals($value, $this->object->get{{ field.fieldNameCapitalized }}());
+    }
+
+{% endfor %}
+{% endblock class_body %}
+}
