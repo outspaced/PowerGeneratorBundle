@@ -30,6 +30,8 @@ class ClassGenerator extends Generator\Generator
 
         foreach ($fields as $key => $field) {
 
+            $useStatement = '';
+
             $fields[$key]['fullyQualifiedType'] = $fields[$key]['type'];
 
             // Lower and upper case!
@@ -39,20 +41,28 @@ class ClassGenerator extends Generator\Generator
             // Namespace!
             if (preg_match('/(?<lower>.+)\\\\(?<top>.+)\\\\(?<class>.+)/i', $field['type'], $matches)) {
                 $fields[$key]['type'] = $matches['top'] . '\\' . $matches['class'];
-                $useStatements[] = $matches['lower'] . '\\' . $matches['top'];
+                $useStatement = $matches['lower'] . '\\' . $matches['top'];
+
             } elseif (preg_match('/(?<top>.+)\\\\(?<class>.+)/i', $field['type'], $matches)) {
-                $useStatements[] = $matches['top'];
+                $useStatement = $matches['top'];
             }
 
             // Type hint!
             if ($this->isTypeHintable($fields[$key]['type'])) {
                 $fields[$key]['typeHint'] = $fields[$key]['type'];
-                $useStatements[] = $fields[$key]['type'];
+
+                if (!$useStatement) {
+                    $useStatement = $fields[$key]['type'];
+                }
             } else {
                 $fields[$key]['typeHint'] = '';
             }
 
             $fields[$key]['testValue'] = $this->getTestValue($fields[$key]['fullyQualifiedType']);
+
+            if ($useStatement) {
+                $useStatements[] = $useStatement;
+            }
         }
 
         $parameters = [

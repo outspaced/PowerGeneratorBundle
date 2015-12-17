@@ -65,7 +65,6 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
             'public function getFooField()',
             'public function setBarField($barField)',
             'public function getBarField()',
-//             '@param Bar\\Baz $fooField',
             '@param Bar\\Baz',
         );
 
@@ -85,6 +84,37 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
         foreach ($strings as $string) {
             $this->assertContains($string, $content);
         }
+    }
+
+    public function testGenerateWithLongNamespaceActions()
+    {
+        $generator = $this->getGenerator();
+        $fields = [
+            0 => [
+                'fieldName' => 'FooField',
+                'type' => 'Foo\Bar\Baz\Beep\Bloop'
+            ],
+        ];
+
+        $generator->generate($this->getBundle(), 'Section', 'Class', $fields);
+
+        $content = file_get_contents($this->tmpDir.'/Section/Class.php');
+        $strings = array(
+            'use Foo\Bar\Baz\Beep;',
+            'public function setFooField(Beep\Bloop $fooField)',
+        );
+
+        foreach ($strings as $string) {
+            $this->assertContains($string, $content);
+        }
+
+        // Ensure there's no redundant namespace
+        $this->assertNotContains('use Beep\Bloop;', $content);
+
+
+        $content = file_get_contents($this->tmpDir.'/Tests/Section/ClassTest.php');
+        $this->assertContains('use Foo\Bar\Baz\Beep;', $content);
+        $this->assertNotContains('use Beep\Bloop;', $content);
     }
 
     protected function getGenerator()
