@@ -42,7 +42,7 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
         }
     }
 
-    public function testGenerateActions()
+    public function testGenerate()
     {
         $generator = $this->getGenerator();
         $fields = [
@@ -86,7 +86,7 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
         }
     }
 
-    public function testGenerateWithLongNamespaceActions()
+    public function testGenerateWithLongNamespace()
     {
         $generator = $this->getGenerator();
         $fields = [
@@ -116,6 +116,46 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
         $this->assertContains('use Foo\Bar\Baz\Beep;', $content);
         $this->assertNotContains('use Beep\Bloop;', $content);
     }
+
+    public function testGenerateWithDuplicatedNamespace()
+    {
+        $generator = $this->getGenerator();
+        $fields = [
+            0 => [
+                'fieldName' => 'FirstField',
+                'type' => 'Foo\Bar\Baz\First'
+            ],
+            1 => [
+                'fieldName' => 'SecondField',
+                'type' => 'Foo\Bar\Baz\Second'
+            ],
+        ];
+
+        $generator->generate($this->getBundle(), 'Section', 'Class', $fields);
+
+        $content = file_get_contents($this->tmpDir.'/Section/Class.php');
+
+        $this->assertContains("use Foo\Bar\Baz;", $content);
+        $this->assertNotContains("use Foo\Bar\Baz;\nuse Foo\Bar\Baz;", $content);
+    }
+
+    public function testGenerateWithArray()
+    {
+        $generator = $this->getGenerator();
+        $fields = [
+            0 => [
+                'fieldName' => 'FirstField',
+                'type' => 'array'
+            ],
+        ];
+
+        $generator->generate($this->getBundle(), 'Section', 'Class', $fields);
+
+        $content = file_get_contents($this->tmpDir.'/Section/Class.php');
+
+        $this->assertNotContains("use array;", $content);
+    }
+
 
     protected function getGenerator()
     {

@@ -51,7 +51,7 @@ class ClassGenerator extends Generator\Generator
             if ($this->isTypeHintable($fields[$key]['type'])) {
                 $fields[$key]['typeHint'] = $fields[$key]['type'];
 
-                if (!$useStatement) {
+                if (!$useStatement && $fields[$key]['type'] != 'array') {
                     $useStatement = $fields[$key]['type'];
                 }
             } else {
@@ -64,6 +64,8 @@ class ClassGenerator extends Generator\Generator
                 $useStatements[] = $useStatement;
             }
         }
+
+        $useStatements = array_unique($useStatements);
 
         $parameters = [
             'namespace' => $bundle->getNamespace(),
@@ -117,6 +119,8 @@ class ClassGenerator extends Generator\Generator
             case 'bool':
             case 'boolean':
                 return 'true';
+            case 'array':
+                return '[]';
             default:
                 return "\$this
             ->getMockBuilder('{$type}')
