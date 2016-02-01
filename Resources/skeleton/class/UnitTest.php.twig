@@ -28,8 +28,8 @@ class {{ class }}Test extends \PHPUnit_Framework_TestCase
 
 {% for field in fields %}
     /**
-     * @covers {{ section }}\{{ class }}::set{{ field.fieldNameCapitalized }}
-     * @covers {{ section }}\{{ class }}::get{{ field.fieldNameCapitalized }}
+     * @covers {{ namespace }}\{{ section }}\{{ class }}::set{{ field.fieldNameCapitalized }}
+     * @covers {{ namespace }}\{{ section }}\{{ class }}::get{{ field.fieldNameCapitalized }}
      */
     public function testSet{{ field.fieldNameCapitalized }}()
     {
