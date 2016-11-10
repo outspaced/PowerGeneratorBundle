@@ -15,7 +15,7 @@ class {{ class }}Test extends \PHPUnit_Framework_TestCase
 {
 {% block class_body %}
     /**
-     * @var {{ section }}\{{ class }}
+     * @var \{{ namespace }}\{{ section }}\{{ class }}
      */
     protected $object;
 
@@ -23,7 +23,7 @@ class {{ class }}Test extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new {{ section }}\{{ class }};
+        $this->object = new \{{ namespace }}\{{ section }}\{{ class }};
     }
 
 {% for field in fields %}

@@ -2,9 +2,8 @@
 
 namespace Outspaced\PowerGeneratorBundle\Generator;
 
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Sensio\Bundle\GeneratorBundle\Generator;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 class ClassGenerator extends Generator\Generator
 {
@@ -20,7 +19,7 @@ class ClassGenerator extends Generator\Generator
         $dir = $bundle->getPath();
 
         $classFile    = $dir.'/'.$section.'/'.$class.'.php';
-        $unitTestFile = $dir .'/Tests/'.$section.'/'.$class.'Test.php';
+        $unitTestFile = str_replace('src', 'tests', $dir) . '/' . $section.'/'.$class.'Test.php';
 
         if (file_exists($classFile)) {
             throw new \RuntimeException(sprintf('Class "%s:%s" already exists', $section, $class));
@@ -70,7 +69,7 @@ class ClassGenerator extends Generator\Generator
         $parameters = [
             'namespace' => $bundle->getNamespace(),
             'bundle'    => $bundle->getName(),
-            'section'   => $section,
+            'section'   => str_replace('/', '\\', $section),
             'class'     => $class,
             'fields'    => $fields,
             'uses'      => $useStatements

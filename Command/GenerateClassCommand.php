@@ -2,18 +2,13 @@
 
 namespace Outspaced\PowerGeneratorBundle\Command;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
+use Sensio\Bundle\GeneratorBundle\Command\GeneratorCommand;
+use Sensio\Bundle\GeneratorBundle\Command\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\Bundle;
-
-use Sensio\Bundle\GeneratorBundle\Command\Helper\QuestionHelper;
-use Sensio\Bundle\GeneratorBundle\Generator\ControllerGenerator;
-use Sensio\Bundle\GeneratorBundle\Command\GeneratorCommand;
-use Sensio\Bundle\GeneratorBundle\Generator\DoctrineEntityGenerator;
 
 use Outspaced\PowerGeneratorBundle\Generator;
 
@@ -31,7 +26,7 @@ class GenerateClassCommand extends GeneratorCommand
 
         $this
             ->addOption('class', '', InputOption::VALUE_REQUIRED, 'The name of the class to create')
-            ->addOption('section', null, InputOption::VALUE_REQUIRED, 'The top level of the namespace')
+            ->addOption('sections', null, InputOption::VALUE_REQUIRED, 'The top level of the namespace')
             ->addOption('bundle', null, InputOption::VALUE_REQUIRED, 'The bundle to generate the class inside')
             ->addOption('fields', null, InputOption::VALUE_REQUIRED, 'The fields to create with the new entity')
         ;
@@ -83,7 +78,7 @@ class GenerateClassCommand extends GeneratorCommand
         $this->getGenerator()
             ->generate(
                 $input->getOption('bundle'),
-                $input->getOption('section'),
+                $input->getOption('sections'),
                 $input->getOption('class'),
                 $input->getOption('fields')
             );
@@ -115,7 +110,11 @@ class GenerateClassCommand extends GeneratorCommand
 
             $class = $questionHelper->ask($input, $output, $question);
 
-            list($bundle, $section, $class) = $this->parseShortcutNotation($class);
+            $res = $this->parseShortcutNotation($class);
+
+            $bundle = array_shift($res);
+            $class = array_pop($res);
+            $sections = implode('/', $res);
 
             try {
 
@@ -123,11 +122,11 @@ class GenerateClassCommand extends GeneratorCommand
                     ->get('kernel')
                     ->getBundle($bundle);
 
-                if (!file_exists($b->getPath().'/'.$section.'/'.$class.'.php')) {
+                if (!file_exists($b->getPath().'/'.$sections.'/'.$class.'.php')) {
                     break;
                 }
 
-                $output->writeln(sprintf('<bg=red>Class "%s:%s:%s" already exists.</>', $bundle, $section, $class));
+                $output->writeln(sprintf('<bg=red>Class "%s:%s:%s" already exists.</>', $bundle, $sections, $class));
             } catch (\InvalidArgumentException $e) {
                 // This is incredibly presumptuous
                 $output->writeln(sprintf('<bg=red>Bundle "%s" does not exist.</>', $bundle));
@@ -141,7 +140,7 @@ class GenerateClassCommand extends GeneratorCommand
 
         $input->setOption('fields', $fields);
         $input->setOption('bundle', $b);
-        $input->setOption('section', $section);
+        $input->setOption('sections', $sections);
         $input->setOption('class', $class);
 
     }
@@ -223,8 +222,11 @@ class GenerateClassCommand extends GeneratorCommand
     {
         $parts = explode(':', $shortcut);
 
+//         print_r($parts);
+//         exit('ssss');
+
         if (count($parts) < 3) {
-            throw new \InvalidArgumentException(sprintf('The class name must contain 2 :s ("%s" given, expecting something like AcmeBlogBundle:Services:PostService)', $shortcut));
+            throw new \InvalidArgumentException(sprintf('The class name must contain at least 2 :s ("%s" given, expecting something like AcmeBlogBundle:Services:PostService)', $shortcut));
         }
 
         return $parts;
