@@ -21,8 +21,35 @@ class {{ class }}
     protected ${{ field.fieldName }};
 
 {% endfor -%}
+
+{# CONSTRUCTOR #}
+    /**
+{% for field in fields %}
+{% if field.constructor == 'Y' %}
+     *  @param {{ field.typeHint }} ${{ field.fieldName }}
+{% endif %}
+{% endfor %}
+     */
+    public function __construct(
+        {%- for field in fields -%}
+            {%- if field.constructor == 'Y' -%}
+                {%- if not loop.first -%}, {% endif -%}
+                {{- field.typeHint -}}
+                {%- if field.typeHint is not empty %} {% endif %}${{ field.fieldName -}}
+            {%- endif -%}
+        {%- endfor -%})
+    {
+{% for field in fields %}
+{% if field.constructor == 'Y' %}
+        $this->{{ field.fieldName }} = ${{ field.fieldName }};
+
+{% endif %}
+{% endfor %}
+    }
+
 {# GETTERS #}
 {% for field in fields %}
+{% if field.constructor != 'Y' %}
     /**
      * @return {{ field.type }}
      */
@@ -31,9 +58,11 @@ class {{ class }}
         return $this->{{ field.fieldName }};
     }
 
+{% endif %}
 {% endfor -%}
 {# SETTERS #}
 {% for field in fields %}
+{% if field.constructor != 'Y' %}
     /**
      * @param {{ field.type }}
      * @return {{ class }}
@@ -44,7 +73,7 @@ class {{ class }}
 
         return $this;
     }
-
+{% endif %}
 {% endfor -%}
 {% endblock class_body %}
 }

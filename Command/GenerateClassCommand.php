@@ -146,9 +146,11 @@ class GenerateClassCommand extends GeneratorCommand
     }
 
     /**
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
-     * @param  QuestionHelper  $questionHelper
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param QuestionHelper $questionHelper
+     * @param Bundle\BundleInterface $bundle
      * @throws \InvalidArgumentException
      * @return array
      */
@@ -202,9 +204,14 @@ class GenerateClassCommand extends GeneratorCommand
             $question = new Question($questionHelper->getQuestion('Field type', null), null);
             $type = $questionHelper->ask($input, $output, $question);
 
+            // In the constructor?
+            $question = new Question($questionHelper->getQuestion('In the constructor', 'Y'), null);
+            $constructor = $questionHelper->ask($input, $output, $question);
+
             $data = [
-                'fieldName'  => $fieldName,
-                'type'       => $type
+                'fieldName'   => $fieldName,
+                'type'        => $type,
+                'constructor' => $constructor
             ];
 
             $fields[$fieldName] = $data;
