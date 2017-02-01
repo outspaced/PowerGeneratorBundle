@@ -14,7 +14,7 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
 
         $files = array(
             'Section/Class.php',
-            'Tests/Section/ClassTest.php',
+            'Section/ClassTest.php',
         );
 
         foreach ($files as $file) {
@@ -31,7 +31,7 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
             $this->assertContains($string, $content);
         }
 
-        $content = file_get_contents($this->tmpDir.'/Tests/Section/ClassTest.php');
+        $content = file_get_contents($this->tmpDir.'/Section/ClassTest.php');
         $strings = array(
             'namespace Foo\\BarBundle\\Tests\\Section',
             'class ClassTest',
@@ -48,11 +48,13 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
         $fields = [
             0 => [
                 'fieldName' => 'FooField',
-                'type' => 'Foo\Bar\Baz'
+                'type' => 'Foo\Bar\Baz',
+                'constructor' => null
             ],
             1 => [
                 'fieldName' => 'BarField',
-                'type' => 'int'
+                'type' => 'int',
+                'constructor' => null
             ],
         ];
 
@@ -72,7 +74,7 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
             $this->assertContains($string, $content);
         }
 
-        $content = file_get_contents($this->tmpDir.'/Tests/Section/ClassTest.php');
+        $content = file_get_contents($this->tmpDir.'/Section/ClassTest.php');
         $strings = array(
             'namespace Foo\\BarBundle\\Tests\\Section',
             'use Foo\BarBundle\Section',
@@ -92,7 +94,8 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
         $fields = [
             0 => [
                 'fieldName' => 'FooField',
-                'type' => 'Foo\Bar\Baz\Beep\Bloop'
+                'type' => 'Foo\Bar\Baz\Beep\Bloop',
+                'constructor' => null
             ],
         ];
 
@@ -112,7 +115,7 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
         $this->assertNotContains('use Beep\Bloop;', $content);
 
 
-        $content = file_get_contents($this->tmpDir.'/Tests/Section/ClassTest.php');
+        $content = file_get_contents($this->tmpDir.'/Section/ClassTest.php');
         $this->assertContains('use Foo\Bar\Baz\Beep;', $content);
         $this->assertNotContains('use Beep\Bloop;', $content);
     }
@@ -123,11 +126,13 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
         $fields = [
             0 => [
                 'fieldName' => 'FirstField',
-                'type' => 'Foo\Bar\Baz\First'
+                'type' => 'Foo\Bar\Baz\First',
+                'constructor' => null
             ],
             1 => [
                 'fieldName' => 'SecondField',
-                'type' => 'Foo\Bar\Baz\Second'
+                'type' => 'Foo\Bar\Baz\Second',
+                'constructor' => null
             ],
         ];
 
@@ -145,7 +150,8 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
         $fields = [
             0 => [
                 'fieldName' => 'FirstField',
-                'type' => 'array'
+                'type' => 'array',
+                'constructor' => null
             ],
         ];
 
@@ -167,7 +173,7 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
 
     protected function getBundle()
     {
-        $bundle = $this->getMock('Symfony\Component\HttpKernel\Bundle\BundleInterface');
+        $bundle = $this->createMock('Symfony\Component\HttpKernel\Bundle\BundleInterface');
         $bundle->expects($this->any())->method('getPath')->will($this->returnValue($this->tmpDir));
         $bundle->expects($this->any())->method('getName')->will($this->returnValue('FooBarBundle'));
         $bundle->expects($this->any())->method('getNamespace')->will($this->returnValue('Foo\BarBundle'));
