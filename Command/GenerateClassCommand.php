@@ -205,7 +205,7 @@ class GenerateClassCommand extends GeneratorCommand
             $type = $questionHelper->ask($input, $output, $question);
 
             // In the constructor?
-            $question = new Question($questionHelper->getQuestion('In the constructor', 'Y'), null);
+            $question = new Question($questionHelper->getQuestion('In the constructor', 'Y'), 'Y');
             $constructor = $questionHelper->ask($input, $output, $question);
 
             $data = [
@@ -228,9 +228,6 @@ class GenerateClassCommand extends GeneratorCommand
     public function parseShortcutNotation($shortcut)
     {
         $parts = explode(':', $shortcut);
-
-//         print_r($parts);
-//         exit('ssss');
 
         if (count($parts) < 3) {
             throw new \InvalidArgumentException(sprintf('The class name must contain at least 2 :s ("%s" given, expecting something like AcmeBlogBundle:Services:PostService)', $shortcut));

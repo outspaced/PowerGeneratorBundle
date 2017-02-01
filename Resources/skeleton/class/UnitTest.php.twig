@@ -2,6 +2,8 @@
 
 namespace {{ namespace }}\Tests\{{ section }};
 
+use {{ namespace }}\{{ section }}\{{ class }};
+
 {% block use_statements %}
 use {{ namespace }}\{{ section }};
 {% for use in uses %}
@@ -15,7 +17,7 @@ class {{ class }}Test extends \PHPUnit_Framework_TestCase
 {
 {% block class_body %}
     /**
-     * @var \{{ namespace }}\{{ section }}\{{ class }}
+     * @var {{ class }}
      */
     protected $object;
 
@@ -23,17 +25,27 @@ class {{ class }}Test extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-{% for field in fields %}    
+{% for field in fields %}
 {% if field.constructor == 'Y' %}
         ${{ field.fieldName }} = {{ field.testValue }};
-{% endif %}
-{% endfor -%}
 
-        $this->object = new \{{ namespace }}\{{ section }}\{{ class }}({%- for field in fields -%}
-            {%- if field.constructor == 'Y' -%}
-                {%- if not loop.first -%}, {% endif %}${{ field.fieldName -}}
-            {%- endif -%}
-        {%- endfor -%});
+{% endif %}
+{% endfor %}
+        $this->object = new {{ class }}(
+            {%- for field in fields -%}
+                {%- if field.constructor == 'Y' -%}
+                    {%- if not loop.first -%}, {% endif %}${{ field.fieldName -}}
+                {%- endif -%}
+            {%- endfor -%}
+        );
+    }
+
+    /**
+     * @covers {{ class }}::__construct
+     */
+    public function testCanBeInstantiated()
+    {
+        $this->assertInstanceOf({{ class }}::class, $this->object);
     }
 
 {% for field in fields %}
