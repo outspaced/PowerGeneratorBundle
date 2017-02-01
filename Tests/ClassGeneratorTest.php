@@ -10,7 +10,7 @@ class ClassGeneratorTest extends SensioGenerator\GeneratorTest
     public function testGenerateClass()
     {
         $this->getGenerator()
-            ->generate($this->getBundle(), 'Section', 'Class', [['fieldName' => 'Foo', 'type' => 'FooType']]);
+            ->generate($this->getBundle(), 'Section', 'Class', [['fieldName' => 'Foo', 'type' => 'FooType', 'constructor' => 'N']]);
 
         $files = array(
             'Section/Class.php',
